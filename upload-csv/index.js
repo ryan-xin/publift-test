@@ -29,9 +29,25 @@ app.post('/upload-csv', upload.single('csv'), (req, res) => {
       dataRow['Pageviews'] = item['Pageviews'];
       return dataRow;
     });
-    console.log(averagePageview);
+    // console.log(averagePageview);
     axios.post('http://localhost:8002/average-pageviews', {
       filteredData: averagePageview,
+      fileId: fileId
+    })
+    .then(res => {
+      console.log(res.data);
+    })
+    .catch(err => console.log(err));
+    
+    const ratioUsersSessions = jsonObject.map( (item) => {
+      const dataRow = {};
+      dataRow['Users'] = item['Users'];
+      dataRow['Sessions'] = item['Sessions'];
+      return dataRow;
+    });
+    console.log(ratioUsersSessions);
+    axios.post('http://localhost:8003/ratio-users-sessions', {
+      filteredData: ratioUsersSessions,
       fileId: fileId
     })
     .then(res => {
@@ -49,6 +65,7 @@ app.get('/csv-results/:fileId', (req, res) => {
   const fileId = req.params.fileId;
   console.log(fileId);
   let averagePageview;
+  let ratioUsersSessions;
   
   axios.get(`http://localhost:8002/average-pageviews/${fileId}`)
   .then(res => {
@@ -56,8 +73,15 @@ app.get('/csv-results/:fileId', (req, res) => {
     averagePageview = res.data;
   })
   .catch(err => console.log(err));
+
+  axios.get(`http://localhost:8003/ratio-users-sessions/${fileId}`)
+  .then(res => {
+    console.log(res.data);
+    ratioUsersSessions = res.data;
+  })
+  .catch(err => console.log(err));
   
-  res.json({averagePageview});
+  res.json({averagePageview, ratioUsersSessions});
 });
 
 app.listen(PORT, () => {
