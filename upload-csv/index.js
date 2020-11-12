@@ -127,9 +127,10 @@ app.post('/upload-csv', upload.single('csv'), (req, res) => {
 
 app.get('/csv-results/:fileId', (req, res) => {
   const fileId = req.params.fileId;
-  console.log(fileId);
+  // console.log(fileId);
   let averagePageview;
   let ratioUsersSessions;
+  let maximumSessions;
   
   axios.get(`http://localhost:8002/average-pageviews/${fileId}`)
   .then(res => {
@@ -144,8 +145,15 @@ app.get('/csv-results/:fileId', (req, res) => {
     ratioUsersSessions = res.data;
   })
   .catch(err => console.log(err));
+
+  axios.get(`http://localhost:8004/maximum-sessions/${fileId}`)
+  .then(res => {
+    console.log(res.data);
+    maximumSessions = res.data;
+  })
+  .catch(err => console.log(err));
   
-  res.json({averagePageview, ratioUsersSessions});
+  res.json(averagePageview, ratioUsersSessions, maximumSessions);
 });
 
 app.listen(PORT, () => {
