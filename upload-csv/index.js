@@ -119,41 +119,57 @@ app.post('/upload-csv', upload.single('csv'), (req, res) => {
     })
     .catch(err => console.log(err));
     
+    /* ---------------- Delete temp csv file ---------------- */
+    
     fs.unlinkSync(req.file.path);
     
     res.json({fileId: fileId});
   })
 });
 
-app.get('/csv-results/:fileId', (req, res) => {
-  const fileId = req.params.fileId;
-  // console.log(fileId);
-  let averagePageview;
-  let ratioUsersSessions;
-  let maximumSessions;
+app.get('/csv-results/:fileId', async (req, res) => {
+  try {
+    const fileId = req.params.fileId;
+    // console.log(fileId);
+    // let averagePageview;
+    // let ratioUsersSessions;
+    // let maximumSessions;
+    
+    // axios.get(`http://localhost:8002/average-pageviews/${fileId}`)
+    // .then(res => {
+    //   console.log(res.data);
+    //   averagePageview = res.data;
+    // })
+    // .catch(err => console.log(err));
   
-  axios.get(`http://localhost:8002/average-pageviews/${fileId}`)
-  .then(res => {
-    console.log(res.data);
-    averagePageview = res.data;
-  })
-  .catch(err => console.log(err));
-
-  axios.get(`http://localhost:8003/ratio-users-sessions/${fileId}`)
-  .then(res => {
-    console.log(res.data);
-    ratioUsersSessions = res.data;
-  })
-  .catch(err => console.log(err));
-
-  axios.get(`http://localhost:8004/maximum-sessions/${fileId}`)
-  .then(res => {
-    console.log(res.data);
-    maximumSessions = res.data;
-  })
-  .catch(err => console.log(err));
+    // axios.get(`http://localhost:8003/ratio-users-sessions/${fileId}`)
+    // .then(res => {
+    //   console.log(res.data);
+    //   ratioUsersSessions = res.data;
+    // })
+    // .catch(err => console.log(err));
   
-  res.json(averagePageview, ratioUsersSessions, maximumSessions);
+    // axios.get(`http://localhost:8004/maximum-sessions/${fileId}`)
+    // .then(res => {
+    //   console.log(res.data);
+    //   maximumSessions = res.data;
+    // })
+    // .catch(err => console.log(err));
+    
+    const [averagePageview, ratioUsersSessions, maximumSessions] = await axios.all([
+      axios.get(`http://localhost:8002/average-pageviews/${fileId}`),
+      axios.get(`http://localhost:8003/ratio-users-sessions/${fileId}`),
+      axios.get(`http://localhost:8004/maximum-sessions/${fileId}`)
+    ])
+    
+    res.json({
+      averagePageview: averagePageview.data, 
+      ratioUsersSessions: ratioUsersSessions.data, 
+      maximumSessions: maximumSessions.data
+    });
+  } catch (err) {
+    console.log(err);
+  };
 });
 
 app.listen(PORT, () => {
