@@ -12,8 +12,6 @@ const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
 const fs = require('fs');
 const csv = require('csvtojson');
-// const path = require('path');
-// const csv = require('fast-csv');
 
 app.post('/upload-csv', upload.single('csv'), (req, res) => {
   csv()
@@ -123,6 +121,8 @@ app.post('/upload-csv', upload.single('csv'), (req, res) => {
     
     fs.unlinkSync(req.file.path);
     
+    /* ----------------- Send unique FileId ----------------- */
+    
     res.json({fileId: fileId});
   })
 });
@@ -130,43 +130,25 @@ app.post('/upload-csv', upload.single('csv'), (req, res) => {
 app.get('/csv-results/:fileId', async (req, res) => {
   try {
     const fileId = req.params.fileId;
-    // console.log(fileId);
-    // let averagePageview;
-    // let ratioUsersSessions;
-    // let maximumSessions;
-    
-    // axios.get(`http://localhost:8002/average-pageviews/${fileId}`)
-    // .then(res => {
-    //   console.log(res.data);
-    //   averagePageview = res.data;
-    // })
-    // .catch(err => console.log(err));
-  
-    // axios.get(`http://localhost:8003/ratio-users-sessions/${fileId}`)
-    // .then(res => {
-    //   console.log(res.data);
-    //   ratioUsersSessions = res.data;
-    // })
-    // .catch(err => console.log(err));
-  
-    // axios.get(`http://localhost:8004/maximum-sessions/${fileId}`)
-    // .then(res => {
-    //   console.log(res.data);
-    //   maximumSessions = res.data;
-    // })
-    // .catch(err => console.log(err));
-    
-    const [averagePageview, ratioUsersSessions, maximumSessions] = await axios.all([
+
+    const [responseOne, responseTwo, responseThree] = await axios.all([
       axios.get(`http://localhost:8002/average-pageviews/${fileId}`),
       axios.get(`http://localhost:8003/ratio-users-sessions/${fileId}`),
       axios.get(`http://localhost:8004/maximum-sessions/${fileId}`)
     ])
+
+    if (responseOne.data.processingFinished === true && responseTwo.data.processingFinished === true && responseThree.data.processingFinished === true) {
+      res.json({
+        averagePageview: responseOne.data.requestedResult, 
+        ratioUsersSessions: responseTwo.data.requestedResult, 
+        maximumSessions: responseThree.data.requestedResult
+      });
+    } else {
+      res.json({
+        message: 'We are still processing your file. Please come back later.'
+      })
+    }
     
-    res.json({
-      averagePageview: averagePageview.data, 
-      ratioUsersSessions: ratioUsersSessions.data, 
-      maximumSessions: maximumSessions.data
-    });
   } catch (err) {
     console.log(err);
   };

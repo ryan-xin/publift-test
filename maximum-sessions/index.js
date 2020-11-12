@@ -3,8 +3,6 @@ const app = express();
 
 const PORT = process.env.PORT || 8004;
 
-const axios = require('axios');
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -45,7 +43,7 @@ app.post('/maximum-sessions', (req, res) => {
     processedResults.push(singleWeekResult);
   }
   // console.log(processedResults);
-  totalResults[fileId] = processedResults;
+  setTimeout(() => {totalResults[fileId] = processedResults}, 10000);
   console.log(totalResults);  
 });
 
@@ -54,7 +52,11 @@ app.get('/maximum-sessions/:fileId', (req, res) => {
   console.log(fileId);
   const requestedResult = totalResults[fileId];
   console.log(requestedResult);
-  res.json(requestedResult);
+  if (requestedResult) {
+    res.json({processingFinished: true, requestedResult});
+  } else {
+    res.json({processingFinished: false})
+  }
 });
 
 app.listen(PORT, () => {

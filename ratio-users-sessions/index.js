@@ -3,8 +3,6 @@ const app = express();
 
 const PORT = process.env.PORT || 8003;
 
-const axios = require('axios');
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -16,12 +14,11 @@ app.post('/ratio-users-sessions', (req, res) => {
   let processedResults = {};
   let users = 0;
   let sessions = 0;
-  console.log(req.body);
   filteredData.forEach((item) => {
     users += item['Users'];
     sessions += item['Sessions'];
   });
-  totalResults[fileId] = (sessions / users).toFixed(2);
+  setTimeout(() => {totalResults[fileId] = (sessions / users).toFixed(2)}, 7000);
   console.log(totalResults);  
 });
 
@@ -30,7 +27,11 @@ app.get('/ratio-users-sessions/:fileId', (req, res) => {
   console.log(fileId);
   const requestedResult = totalResults[fileId];
   console.log(requestedResult);
-  res.json(requestedResult);
+  if (requestedResult) {
+    res.json({processingFinished: true, requestedResult});
+  } else {
+    res.json({processingFinished: false})
+  }
 });
 
 app.listen(PORT, () => {
