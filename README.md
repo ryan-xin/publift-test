@@ -22,8 +22,8 @@ Install [Postman](https://www.postman.com/downloads/)
 - Enter 'localhost:8001/csv-upload', press 'Send';
 - Copy the 'fileId';
 
-#### Send Request
+#### Get Results
 
 - Select 'GET';
 - Enter 'localhost:8001/csv-results/:fileId', the 'fileId' is the result from 'POST', press 'Send';
-- Processing time take 10s, so test the 'GET' winthin 9s, more than 9s and with wrong fileId;
+- Processing time take 9s, so test the 'GET' winthin 9s, more than 9s and with wrong fileId;
