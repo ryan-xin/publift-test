@@ -1,13 +1,17 @@
 const axios = require('axios');
 
+const averagePageviewEndpoint = 'http://localhost:8002/average-pageviews';
+const ratioUsersSessionsEndpoint = 'http://localhost:8003/ratio-users-sessions';
+const maximumSessionsEndpoint = 'http://localhost:8004/maximum-sessions';
+
 const results = async (req, res) => {
   try {
     const fileId = req.params.fileId;
 
     const [responseOne, responseTwo, responseThree] = await axios.all([
-      axios.get(`http://localhost:8002/average-pageviews/${fileId}`),
-      axios.get(`http://localhost:8003/ratio-users-sessions/${fileId}`),
-      axios.get(`http://localhost:8004/maximum-sessions/${fileId}`)
+      axios.get(`${averagePageviewEndpoint}/${fileId}`),
+      axios.get(`${ratioUsersSessionsEndpoint}/${fileId}`),
+      axios.get(`${maximumSessionsEndpoint}/${fileId}`)
     ])
 
     if (responseOne.data.hasId === true && responseTwo.data.hasId === true && responseThree.data.hasId === true) {
@@ -18,11 +22,13 @@ const results = async (req, res) => {
           maximumSessions: responseThree.data.requestedResult
         });
       } else {
+        console.log('We are still processing your file. Please come back later.');
         res.json({
           message: 'We are still processing your file. Please come back later.'
         });
       }
     } else {
+      console.log('File ID is incorrect. Please try again.');
       res.json({
         message: 'File ID is incorrect. Please try again.'
       });

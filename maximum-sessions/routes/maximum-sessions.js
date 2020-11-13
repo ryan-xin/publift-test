@@ -1,11 +1,16 @@
 const totalResults = {};
 
+/* ------------- Save Maximum Sessions data ------------ */
+
 const post = (req, res) => {
   const fileId = req.body.fileId;
   const filteredData = req.body.filteredData;
   const filteredDates = req.body.filteredDates;
   const weekNums = filteredDates.length / 7;
+  
   totalResults[fileId] = null;
+  
+  // Generate each week's startDate and endDate
   let weekRange = [];
   for (let i = 1; i <= weekNums; i++) {
     let weekRangeItem = {};
@@ -13,6 +18,8 @@ const post = (req, res) => {
     weekRangeItem['endDate'] = filteredDates[i * 7 - 1];
     weekRange.push(weekRangeItem);
   }
+  
+  // Based on weekRange to create an array to store each week's results
   let weeklyResults = [];
   for (let i = 0; i < weekRange.length; i++) {
     const singleWeekResult = filteredData.filter( (item) => {
@@ -20,6 +27,8 @@ const post = (req, res) => {
     });
     weeklyResults.push(singleWeekResult);
   }
+  
+  // Mapping to generate each week's maximum sessions for each type
   let processedResults = [];
   for (let i = 0; i < weeklyResults.length; i++) {
     const singleWeek = weeklyResults[i];
@@ -34,12 +43,20 @@ const post = (req, res) => {
     });
     processedResults.push(singleWeekResult);
   }
-  setTimeout(() => {totalResults[fileId] = processedResults}, 20000);
+  
+  // Use setTimeout to simulate processing time
+  setTimeout(() => {
+    totalResults[fileId] = processedResults;
+    res.json({message: 'Weekly maximum sessions data analysis done.'})
+  }, 10000);
   console.log(totalResults);  
 };
 
+/* ------------- Retrieve Maximum Sessions data ------------ */
+
 const get = (req, res) => {
   const fileId = req.params.fileId;
+  
   if (fileId in totalResults) {
     const requestedResult = totalResults[fileId];
     console.log(requestedResult);

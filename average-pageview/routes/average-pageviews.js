@@ -1,13 +1,16 @@
 const totalResults = {};
 
+/* ------------- Save Average Pageviews data ------------ */
+
 const post = (req, res) => {
   const fileId = req.body.fileId;
   const filteredData = req.body.filteredData;
-  const days = 31;
+  const days = req.body.days;
+  
   totalResults[fileId] = null;
+  
   let processedResults = {};
   filteredData.forEach((item) => {
-    Number(Math.round(1.005+'e2')+'e-2');
     const views = parseInt(item['Pageviews']);
     if (processedResults[item['Traffic Type']] >= 0) {
       processedResults[item['Traffic Type']] += views;
@@ -18,12 +21,20 @@ const post = (req, res) => {
   for (let key of Object.keys(processedResults)) {
     processedResults[key] = Math.round((processedResults[key] / days) * 100) / 100;
   }
-  setTimeout(() => {totalResults[fileId] = processedResults}, 20000);
+  
+  // Use setTimeout to simulate processing time
+  setTimeout(() => {
+    totalResults[fileId] = processedResults;
+    res.json({message: 'Average pageviews data analysis done.'})
+  }, 8000);
   console.log(totalResults);
 };
 
+/* ----------- Retrieve Average Pageview data ----------- */
+
 const get = (req, res) => {
   const fileId = req.params.fileId;
+  
   if (fileId in totalResults) {
     const requestedResult = totalResults[fileId];
     console.log(requestedResult);

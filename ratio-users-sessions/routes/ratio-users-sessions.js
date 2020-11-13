@@ -1,9 +1,13 @@
 const totalResults = {};
 
+/* ------------- Save Ratio Users & Sessions data ------------ */
+
 const post = (req, res) => {
   const fileId = req.body.fileId;
   const filteredData = req.body.filteredData;
+  
   totalResults[fileId] = null;
+  
   let processedResults = 0;
   let users = 0;
   let sessions = 0;
@@ -12,12 +16,20 @@ const post = (req, res) => {
     sessions += item['Sessions'];
   });
   processedResults = (sessions / users).toFixed(2);
-  setTimeout(() => {totalResults[fileId] = processedResults}, 20000);
+  
+  // Use setTimeout to simulate processing time
+  setTimeout(() => {
+    totalResults[fileId] = processedResults;
+    res.json({message: 'Ratio of users & sessions data analysis done.'})
+  }, 9000);
   console.log(totalResults);  
 };
 
+/* ------------- Retrieve Ratio Users & Sessions data ------------ */
+
 const get = (req, res) => {
   const fileId = req.params.fileId;
+  
   if (fileId in totalResults) {
     const requestedResult = totalResults[fileId];
     console.log(requestedResult);

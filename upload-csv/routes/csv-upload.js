@@ -17,13 +17,16 @@ const upload = (req, res) => {
     /* ------------------ Average Pageview ------------------ */
     
     const averagePageviews = generateAveragePageviews(jsonObject);
+    const days = generateDays(jsonObject).length;
 
     axios.post(averagePageviewEndpoint, {
       filteredData: averagePageviews,
-      fileId: fileId
+      fileId: fileId,
+      days: days
     })
     .then(res => {
       console.log(res.data);
+      // res.json({message: res.data});
     })
     .catch(err => console.log(err));
     
@@ -37,6 +40,7 @@ const upload = (req, res) => {
     })
     .then(res => {
       console.log(res.data);
+      // res.json({message: res.data});
     })
     .catch(err => console.log(err));
     
@@ -52,6 +56,7 @@ const upload = (req, res) => {
     })
     .then(res => {
       console.log(res.data);
+      // res.json({message: res.data});
     })
     .catch(err => console.log(err));
     
@@ -85,14 +90,18 @@ function generateRatioUsersSessions(jsonObject) {
   });
 };
 
-// Generate completed week days of csv
-function generateFilteredDates(jsonObject) {
+function generateDays(jsonObject) {
   // use dates to store all dates in csv
   const dates = jsonObject.map( (item) => {
     return item['Date'];
   });
   // Remove duplicated dates
-  const uniqueDates = [...new Set(dates)]
+  return [...new Set(dates)];
+};
+
+// Generate completed week days of csv
+function generateFilteredDates(jsonObject) {
+  const uniqueDates = generateDays(jsonObject);
   const orderedUniqueDates = uniqueDates.sort();
   let filteredDates = [];
   let firstSundayIndex;
