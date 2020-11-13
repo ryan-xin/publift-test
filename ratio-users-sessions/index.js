@@ -18,7 +18,7 @@ app.post('/ratio-users-sessions', (req, res) => {
     users += item['Users'];
     sessions += item['Sessions'];
   });
-  setTimeout(() => {totalResults[fileId] = (sessions / users).toFixed(2)}, 7000);
+  setTimeout(() => {totalResults[fileId] = (sessions / users).toFixed(2)}, 10000);
   console.log(totalResults);  
 });
 
