@@ -20,8 +20,8 @@ const post = (req, res) => {
   // Use setTimeout to simulate processing time
   setTimeout(() => {
     totalResults[fileId] = processedResults;
-    res.json({message: 'Ratio of users & sessions data analysis done.'})
-  }, 9000);
+    res.json({processingFinished: true});
+  }, 6000);
   console.log(totalResults);  
 };
 

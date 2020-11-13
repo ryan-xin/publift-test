@@ -25,8 +25,8 @@ const post = (req, res) => {
   // Use setTimeout to simulate processing time
   setTimeout(() => {
     totalResults[fileId] = processedResults;
-    res.json({message: 'Average pageviews data analysis done.'})
-  }, 8000);
+    res.json({processingFinished: true});
+  }, 7000);
   console.log(totalResults);
 };
 

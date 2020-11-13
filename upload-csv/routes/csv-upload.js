@@ -6,67 +6,54 @@ const axios = require('axios');
 const upload = (req, res) => {
   csv()
   .fromFile(req.file.path)
-  .then((jsonObject) => {
-    
-    const fileId = req.file.filename;
-    
-    const averagePageviewEndpoint = 'http://localhost:8002/average-pageviews';
-    const ratioUsersSessionsEndpoint = 'http://localhost:8003/ratio-users-sessions';
-    const maximumSessionsEndpoint = 'http://localhost:8004/maximum-sessions';
-    
-    /* ------------------ Average Pageview ------------------ */
-    
-    const averagePageviews = generateAveragePageviews(jsonObject);
-    const days = generateDays(jsonObject).length;
+  .then( async (jsonObject) => {
+    try {
+      const fileId = req.file.filename;
+      // Send unique id to user
+      res.json({fileId: fileId});
+      
+      const averagePageviewEndpoint = 'http://localhost:8002/average-pageviews';
+      const ratioUsersSessionsEndpoint = 'http://localhost:8003/ratio-users-sessions';
+      const maximumSessionsEndpoint = 'http://localhost:8004/maximum-sessions';
 
-    axios.post(averagePageviewEndpoint, {
-      filteredData: averagePageviews,
-      fileId: fileId,
-      days: days
-    })
-    .then(res => {
-      console.log(res.data);
-      // res.json({message: res.data});
-    })
-    .catch(err => console.log(err));
-    
-    /* ---------------- Ratio Users Sessions ---------------- */
-    
-    const ratioUsersSessions = generateRatioUsersSessions(jsonObject);
-    
-    axios.post(ratioUsersSessionsEndpoint, {
-      filteredData: ratioUsersSessions,
-      fileId: fileId
-    })
-    .then(res => {
-      console.log(res.data);
-      // res.json({message: res.data});
-    })
-    .catch(err => console.log(err));
-    
-    /* ------------------ Maximum Sessions ------------------ */
-    
-    const filteredDates = generateFilteredDates(jsonObject);
-    const maximumSessions = generateMaximumSessions(jsonObject, filteredDates);
-    
-    axios.post(maximumSessionsEndpoint, {
-      filteredData: maximumSessions,
-      fileId: fileId,
-      filteredDates: filteredDates
-    })
-    .then(res => {
-      console.log(res.data);
-      // res.json({message: res.data});
-    })
-    .catch(err => console.log(err));
-    
-    /* ---------------- Delete temp csv file ---------------- */
-    
-    fs.unlinkSync(req.file.path);
-    
-    /* ----------------- Send unique FileId ----------------- */
-    
-    res.json({fileId: fileId});
+      const averagePageviews = generateAveragePageviews(jsonObject);
+      const days = generateDays(jsonObject).length;
+      
+      const ratioUsersSessions = generateRatioUsersSessions(jsonObject);
+
+      const filteredDates = generateFilteredDates(jsonObject);
+      const maximumSessions = generateMaximumSessions(jsonObject, filteredDates);
+
+      const [responseOne, responseTwo, responseThree] = await axios.all([
+        axios.post(averagePageviewEndpoint, {
+          filteredData: averagePageviews,
+          fileId: fileId,
+          days: days
+        }),
+        axios.post(ratioUsersSessionsEndpoint, {
+          filteredData: ratioUsersSessions,
+          fileId: fileId
+        }),
+        axios.post(maximumSessionsEndpoint, {
+          filteredData: maximumSessions,
+          fileId: fileId,
+          filteredDates: filteredDates
+        })
+      ]);
+      
+      if (responseOne.data.processingFinished === true && responseTwo.data.processingFinished === true && responseThree.data.processingFinished === true) {
+        console.log('Data processing finished.');
+        // TODO: send response to front-end
+      }
+      
+      // Delete temp csv file 
+      fs.unlinkSync(req.file.path);
+    } catch (err) {
+      console.log(err);
+      res.json({
+        message: 'System error. Please try again.'
+      });      
+    }
   })
 };
 

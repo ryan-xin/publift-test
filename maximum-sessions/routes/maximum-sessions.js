@@ -47,8 +47,8 @@ const post = (req, res) => {
   // Use setTimeout to simulate processing time
   setTimeout(() => {
     totalResults[fileId] = processedResults;
-    res.json({message: 'Weekly maximum sessions data analysis done.'})
-  }, 10000);
+    res.json({processingFinished: true})
+  }, 8000);
   console.log(totalResults);  
 };
 
