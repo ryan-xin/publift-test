@@ -7,9 +7,10 @@ const post = (req, res) => {
   const filteredData = req.body.filteredData;
   const days = req.body.days;
 
+  // Save data
   averagePageviewsServices.saveData(fileId, filteredData, days);
   
-  res.json({message: 'Average Pageviews data saved.'});
+  res.status(200).json({message: 'Average Pageviews data is being processed'});
 };
 
 /* ----------- Retrieve Average Pageview data ----------- */

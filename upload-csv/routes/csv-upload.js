@@ -14,7 +14,7 @@ const upload = (req, res) => {
     const fileId = req.file.filename;
     
     // Send unique id to user
-    res.json({fileId: fileId});
+    res.status(200).json({fileId: fileId});
     
     const averagePageviewEndpoint = 'http://localhost:8002/average-pageviews';
     const ratioUsersSessionsEndpoint = 'http://localhost:8003/ratio-users-sessions';

@@ -3,7 +3,7 @@ const getResults = require('../../_helper/get-results');
 const totalResults = {};
 
 const saveData = (fileId, filteredData) => {
-  
+  // Save the fileId as the key and set value to null so we can show the data is still processing
   totalResults[fileId] = null;
   
   let processedResults = 0;

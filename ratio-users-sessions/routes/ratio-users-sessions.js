@@ -5,10 +5,11 @@ const ratioUsersSessionsServices = require('../services/ratio-users-sessions');
 const post = (req, res) => {
   const fileId = req.body.fileId;
   const filteredData = req.body.filteredData;
-
+  
+  // Save data
   ratioUsersSessionsServices.saveData(fileId, filteredData);
   
-  res.json({message: 'Average Pageviews data saved.'});
+  res.status(200).json({message: 'Ratio of Users and Sessions data is being processed.'});
 };
 
 /* ------------- Retrieve Ratio Users & Sessions data ------------ */
