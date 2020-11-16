@@ -15,6 +15,11 @@ In each folder, run:
 
 Install [Postman](https://www.postman.com/downloads/)
 
+In each folder, run:
+``` 
+ $ npm start
+ ```
+
 #### Upload CSV
 
 - Select 'POST';

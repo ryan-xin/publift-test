@@ -12,7 +12,7 @@ const results = async (req, res) => {
       axios.get(`${averagePageviewEndpoint}/${fileId}`),
       axios.get(`${ratioUsersSessionsEndpoint}/${fileId}`),
       axios.get(`${maximumSessionsEndpoint}/${fileId}`)
-    ])
+    ]);
 
     if (responseOne.data.hasId === true && responseTwo.data.hasId === true && responseThree.data.hasId === true) {
       if (responseOne.data.processingFinished === true && responseTwo.data.processingFinished === true && responseThree.data.processingFinished === true) {
