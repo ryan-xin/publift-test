@@ -1,4 +1,6 @@
-const totalResults = {};
+// const totalResults = {};
+
+const averagePageviewsServices = require('../services/average-pageviews');
 
 /* ------------- Save Average Pageviews data ------------ */
 
@@ -6,28 +8,10 @@ const post = (req, res) => {
   const fileId = req.body.fileId;
   const filteredData = req.body.filteredData;
   const days = req.body.days;
+
+  averagePageviewsServices.saveData(fileId, filteredData, days);
   
-  totalResults[fileId] = null;
-  
-  let processedResults = {};
-  filteredData.forEach((item) => {
-    const views = parseInt(item['Pageviews']);
-    if (processedResults[item['Traffic Type']] >= 0) {
-      processedResults[item['Traffic Type']] += views;
-    } else {
-      processedResults[item['Traffic Type']] = views;
-    }
-  });
-  for (let key of Object.keys(processedResults)) {
-    processedResults[key] = Math.round((processedResults[key] / days) * 100) / 100;
-  }
-  
-  // Use setTimeout to simulate processing time
-  setTimeout(() => {
-    totalResults[fileId] = processedResults;
-    res.json({processingFinished: true});
-  }, 7000);
-  console.log(totalResults);
+  res.json({message: 'Average Pageviews data saved.'});
 };
 
 /* ----------- Retrieve Average Pageview data ----------- */
@@ -35,12 +19,12 @@ const post = (req, res) => {
 const get = (req, res) => {
   const fileId = req.params.fileId;
   
-  if (fileId in totalResults) {
-    const requestedResult = totalResults[fileId];
-    console.log(requestedResult);
-    if (requestedResult === null) {
+  if (averagePageviewsServices.hasFileId(fileId)) {
+    if (averagePageviewsServices.dataNotSaved(fileId)) {
       res.json({hasId: true, processingFinished: false});
     } else {
+      const requestedResult = averagePageviewsServices.getData(fileId);
+      console.log(requestedResult);
       res.json({hasId: true, processingFinished: true, requestedResult});
     }
   } else {
