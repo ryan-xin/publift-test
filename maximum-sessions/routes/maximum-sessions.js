@@ -6,6 +6,7 @@ const post = (req, res) => {
   const fileId = req.body.fileId;
   const filteredData = req.body.filteredData;
   const filteredDates = req.body.filteredDates;
+  
   const weekNums = filteredDates.length / 7;
   
   totalResults[fileId] = null;

@@ -1,5 +1,3 @@
-// const totalResults = {};
-
 const averagePageviewsServices = require('../services/average-pageviews');
 
 /* ------------- Save Average Pageviews data ------------ */

@@ -1,28 +1,14 @@
-const totalResults = {};
+const ratioUsersSessionsServices = require('../services/ratio-users-sessions');
 
 /* ------------- Save Ratio Users & Sessions data ------------ */
 
 const post = (req, res) => {
   const fileId = req.body.fileId;
   const filteredData = req.body.filteredData;
+
+  ratioUsersSessionsServices.saveData(fileId, filteredData);
   
-  totalResults[fileId] = null;
-  
-  let processedResults = 0;
-  let users = 0;
-  let sessions = 0;
-  filteredData.forEach((item) => {
-    users += item['Users'];
-    sessions += item['Sessions'];
-  });
-  processedResults = (sessions / users).toFixed(2);
-  
-  // Use setTimeout to simulate processing time
-  setTimeout(() => {
-    totalResults[fileId] = processedResults;
-    res.json({processingFinished: true});
-  }, 6000);
-  console.log(totalResults);  
+  res.json({message: 'Average Pageviews data saved.'});
 };
 
 /* ------------- Retrieve Ratio Users & Sessions data ------------ */
@@ -30,12 +16,12 @@ const post = (req, res) => {
 const get = (req, res) => {
   const fileId = req.params.fileId;
   
-  if (fileId in totalResults) {
-    const requestedResult = totalResults[fileId];
-    console.log(requestedResult);
-    if (requestedResult === null) {
+  if (ratioUsersSessionsServices.hasFileId(fileId)) {
+    if (ratioUsersSessionsServices.dataNotSaved(fileId)) {
       res.json({hasId: true, processingFinished: false});
     } else {
+      const requestedResult = ratioUsersSessionsServices.getData(fileId);
+      console.log(requestedResult);
       res.json({hasId: true, processingFinished: true, requestedResult});
     }
   } else {
