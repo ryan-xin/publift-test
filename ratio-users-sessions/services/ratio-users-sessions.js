@@ -18,7 +18,7 @@ const saveData = (fileId, filteredData) => {
   // Use setTimeout to simulate processing time
   setTimeout(() => {
     totalResults[fileId] = processedResults;
-  }, 6000);
+  }, 8000);
   console.log(totalResults);
 };
 
