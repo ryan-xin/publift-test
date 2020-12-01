@@ -1,11 +1,13 @@
 const getResults = require('../../_helper/get-results');
 
+// To store all processed results, fileId is the key & data is the value
 const totalResults = {};
 
 const saveData = (fileId, filteredData, filteredDates) => {
   // Save the fileId as the key and set value to null so we can show the data is still processing
   totalResults[fileId] = null;
   
+  // Get how many weeks this data has
   const weekNums = filteredDates.length / 7;
   
   // Generate each week's startDate and endDate
@@ -17,7 +19,7 @@ const saveData = (fileId, filteredData, filteredDates) => {
     weekRange.push(weekRangeItem);
   }
   
-  // Based on weekRange to create an array to store each week's results
+  // Based on weekRange to create an array to separate each week's results
   let weeklyResults = [];
   for (let i = 0; i < weekRange.length; i++) {
     const singleWeekResult = filteredData.filter( (item) => {
@@ -33,8 +35,10 @@ const saveData = (fileId, filteredData, filteredDates) => {
     let singleWeekResult = {};
     singleWeek.forEach((item) => {
       const sessions = parseInt(item['Sessions']);
+      // Initialize the first session value
       if (!singleWeekResult[item['Traffic Type']]) {
         singleWeekResult[item['Traffic Type']] = sessions;
+      // Compare and save the larger session value
       } else if (singleWeekResult[item['Traffic Type']] < sessions) {
         singleWeekResult[item['Traffic Type']] = sessions;
       }
@@ -50,10 +54,12 @@ const saveData = (fileId, filteredData, filteredDates) => {
 };
 
 const hasFileId = (fileId) => {
+  // Call helper functions
   return getResults.checkFileId(fileId, totalResults);
 };
 
 const dataNotSaved = (fileId) => {
+  // Call helper functions
   return getResults.checkData(fileId, totalResults);
 };
 

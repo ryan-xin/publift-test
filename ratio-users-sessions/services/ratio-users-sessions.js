@@ -1,5 +1,6 @@
 const getResults = require('../../_helper/get-results');
 
+// To store all processed results, fileId is the key & data is the value
 const totalResults = {};
 
 const saveData = (fileId, filteredData) => {
@@ -23,10 +24,12 @@ const saveData = (fileId, filteredData) => {
 };
 
 const hasFileId = (fileId) => {
+  // Call helper functions
   return getResults.checkFileId(fileId, totalResults);
 };
 
 const dataNotSaved = (fileId) => {
+  // Call helper functions
   return getResults.checkData(fileId, totalResults);
 };
 

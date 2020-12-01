@@ -17,7 +17,9 @@ const post = (req, res) => {
 const get = (req, res) => {
   const fileId = req.params.fileId;
   
+  // Checking if the fileId is correct
   if (ratioUsersSessionsServices.hasFileId(fileId)) {
+    // Checking if the data is still being processed
     if (ratioUsersSessionsServices.dataNotSaved(fileId)) {
       res.json({hasId: true, processingFinished: false});
     } else {

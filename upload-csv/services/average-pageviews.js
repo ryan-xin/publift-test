@@ -10,11 +10,11 @@ const generateFilteredData = (jsonObject) => {
 
 // Generate unique days number
 const generateFilteredDays = (jsonObject) => {
-  // use dates to store all dates in csv
+  // use dates array to store all dates in csv
   const dates = jsonObject.map((item) => {
     return item['Date'];
   });
-  // Remove duplicated dates
+  // Remove duplicated dates in dates array
   return [...new Set(dates)];
 };
 

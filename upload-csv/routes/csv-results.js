@@ -8,13 +8,16 @@ const results = async (req, res) => {
   try {
     const fileId = req.params.fileId;
 
+    // Waiting for all three responses and then send response to front-end
     const [responseOne, responseTwo, responseThree] = await axios.all([
       axios.get(`${averagePageviewEndpoint}/${fileId}`),
       axios.get(`${ratioUsersSessionsEndpoint}/${fileId}`),
       axios.get(`${maximumSessionsEndpoint}/${fileId}`)
     ]);
 
+    // Check if fileId is correct
     if (responseOne.data.hasId === true && responseTwo.data.hasId === true && responseThree.data.hasId === true) {
+      // Check if all data has finished processing
       if (responseOne.data.processingFinished === true && responseTwo.data.processingFinished === true && responseThree.data.processingFinished === true) {
         res.json({
           averagePageviews: responseOne.data.requestedResult, 

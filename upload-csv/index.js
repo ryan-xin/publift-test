@@ -3,10 +3,14 @@ const app = express();
 
 const PORT = process.env.PORT || 8001;
 
+// Build-in method to recognize the incoming request object as JSON Object
 app.use(express.json());
+// Build-in method to recognize the incoming request object as strings/arrays
 app.use(express.urlencoded({ extended: true }));
 
+// Middleware for uploading files
 const multer = require('multer');
+// Specify the destination
 const upload = multer({ dest: 'uploads/' });
 
 /* --------------------- CSV Upload --------------------- */
